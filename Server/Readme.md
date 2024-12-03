@@ -1,10 +1,10 @@
-#API endpoints
 
-# Register User ---> http://localhost:8080/api/v1/users/register
+#CRUD operations on Event
 
-# Login User --> http://localhost:8080/api/v1/users/login
+# Show all Events ---> http://localhost:8000/api/v1/events/list
 
-# Logout User --> http://localhost:8080/api/v1/users/logout
+# Create an Event (Access only to Admin) ---> http://localhost:8000/api/v1/events/create
 
-#CRUD operations on user
+# Update an Event (Access only to Admin)  --> http://localhost:8000/api/v1/events/update
 
+# Delete an Event (Access only to Admin)  ---> http://localhost:8000/api/v1/events/delete
