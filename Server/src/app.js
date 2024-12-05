@@ -8,6 +8,13 @@ app.use(cors({
     origin:process.env.CORS_ORIGIN,//Accept requests from these origin routes only
     credentials:true
 }));
+//------use of ejs mate for a better templating experience
+import engine from "ejs-mate"
+app.engine('ejs', engine);
+const path = require("path");
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views"));
+
 app.use(methodOverride("_method"));
 
 app.use(express.json({limit:"20kb"}));
