@@ -1,11 +1,13 @@
 import { Router } from "express";//Router is used for routing towards Specific API endpoints
 const router=Router();
-import {showlistings,createlistings,updatelistings,deletelistings} from "../controllers/Events.controller.js";
+import {showlistings,createlistings,updatelistings,deletelistings,renderNewform,updateform,showEvent} from "../controllers/Events.controller.js";
 import {upload} from "../middlewares/multer.middleware.js"
 import {verifyadmin} from "../middlewares/admin.middleware.js"
 //default get route to display all events
 router.route("/list").get(showlistings)
+router.route("/individual/:id").get(showEvent)
 //Create a particular listing of event
+router.route("/create").get(renderNewform)
 router.route("/create").post(
     upload.fields([
         {
@@ -14,7 +16,8 @@ router.route("/create").post(
 
         }
     ]),createlistings)
-//Update Event    
+//Update Event 
+router.route("/update/:id").get(updateform)   
 router.route("/update/:id").put(
         upload.fields([
             {

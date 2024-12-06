@@ -17,6 +17,9 @@ const generateAccessAndRefreshTokens=async(userId)=>{
         throw new ApiError(500,"Something went wrong in generating access and refresh token")
     }
 }
+const showsignup=(req,res)=>{
+    res.render("users/signup.ejs");
+};
 // --------------Register user-----------------
 const registeruser=asyncHandler(async(req,res)=>{
     
@@ -64,6 +67,11 @@ const registeruser=asyncHandler(async(req,res)=>{
     )
 })
 
+
+
+const showLogin=(req,res)=>{
+    res.render("users/login.ejs");
+};
 //---------Login user--------
 const loginUser=asyncHandler(async(req,res)=>{
     const{email,username,password}=req.body;
@@ -174,5 +182,5 @@ const refreshAccessToken=asyncHandler(async(req,res)=>{
     )
  })
 
-export {registeruser,loginUser,logoutUser,refreshAccessToken};
+export {registeruser,loginUser,logoutUser,refreshAccessToken,showsignup,showLogin};
 

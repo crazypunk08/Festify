@@ -4,19 +4,33 @@ import {ApiResponse} from "../utils/ApiResponse.js";
 import {uploadOnCloudinary} from "../utils/cloudinary.js";
 import {Event} from "../models/event.models.js";
 
+
+
+const showEvent=async (req,res)=>{
+    let {id}=req.params;
+    const event=await Event.findById(id)
+    res.render("listings/show1.ejs",{event})
+}
 ///-----------List all Events
 const showlistings=asyncHandler(async(req,res)=>{
     const data= await Event.find({});
-    res.status(200)
-    .json(
-        new ApiResponse(200,data,"Data sent successfully")
-    )
+    //Sending Json Response
+    // res.status(200)
+    // .json(
+    //     new ApiResponse(200,data,"Data sent successfully")
+    // )
+    //Rendering an Ejs template
+    res.status(200).render("listings/index.ejs", { data });
 })
 
 
 //--------------Create an Event-------------------
+const renderNewform=(req,res)=>{
+    res.render("listings/new.ejs");
+}
 const createlistings=asyncHandler(async(req,res)=>{
-    const {title,description,price,location}=req.body
+    console.log(req.body);
+    const {title,description,price,location}=req.body;
     //get the local file path from multer
     if (!req.files?.image || req.files.image.length === 0) {
         throw new ApiError(400, "No image file uploaded");
@@ -34,11 +48,18 @@ const createlistings=asyncHandler(async(req,res)=>{
         price,
         location 
     })
-    res.status(200).json(
-        new ApiResponse(200,newevent,"New Event created successfully")
-    )
+
+    res.redirect("/api/v1/events/list");
+    // res.status(200).json(
+    //     new ApiResponse(200,newevent,"New Event created successfully")
+    // )
 })
 //--------------update  an Event-------------------
+const updateform=async(req,res)=>{
+    let {id}=req.params;
+    const existingEvent=await Event.findById(id)
+    res.render("listings/edit.ejs",{existingEvent})
+}
 const updatelistings=asyncHandler(async(req,res)=>{
     const {id}=req.params
     const {title,description,price,location}=req.body
@@ -68,9 +89,10 @@ const updatelistings=asyncHandler(async(req,res)=>{
                 price: price || existingEvent.price,
                 location: location || existingEvent.location,
     },{new:true})
-    res.status(200).json(
-        new ApiResponse(200,updatedEvent,"Event Updated successfully")
-    )
+    res.status(200).redirect("/api/v1/events/list")
+    // res.status(200).json(
+    //     new ApiResponse(200,updatedEvent,"Event Updated successfully")
+    // )
 })
 //--------------delete an Event-------------------
 const deletelistings=asyncHandler(async(req,res)=>{
@@ -79,9 +101,10 @@ const deletelistings=asyncHandler(async(req,res)=>{
     if(!deletedEvent){
         throw new ApiError(404,"Event not found")
     }
-    res.status(200).json(
-        new ApiResponse(200,deletedEvent," Event deleted successfully")
-    )
+    res.status(200).redirect("/api/v1/events/list")
+    // res.status(200).json(
+    //     new ApiResponse(200,deletedEvent," Event deleted successfully")
+    // )
 })
 
-export {showlistings,updatelistings,createlistings,deletelistings}
+export {showlistings,updatelistings,createlistings,deletelistings,renderNewform,showEvent,updateform}

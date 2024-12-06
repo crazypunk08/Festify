@@ -10,8 +10,11 @@ app.use(cors({
 }));
 //------use of ejs mate for a better templating experience
 import engine from "ejs-mate"
+import path from "path";
+import { fileURLToPath } from "url";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 app.engine('ejs', engine);
-const path = require("path");
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
@@ -19,7 +22,7 @@ app.use(methodOverride("_method"));
 
 app.use(express.json({limit:"20kb"}));
 app.use(express.urlencoded({extended:true}));
-app.use(express.static("public"));
+app.use(express.static(path.join(__dirname, 'public')));
 app.use(cookieParser());
 
 //Register and Login  a user

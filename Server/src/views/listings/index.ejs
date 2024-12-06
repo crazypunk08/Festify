@@ -34,49 +34,11 @@
 <body>
 <!-- this thing is possible by the use of ejs mate -->
    
-        <div id="filters">
-            <div class="filters">
-                <i class="fa-solid fa-fire"></i>
-                <p>Trending</p>
-            </div>
-            <div class="filters">
-                <i class="fa-solid fa-fire"></i>
-                <p>Rooms</p>
-            </div>
-            <div class="filters">
-                <i class="fa-solid fa-mountain"></i>
-                <p>National parks</p>
-            </div>
-            <div class="filters">
-                <i class="fa-solid fa-umbrella-beach"></i>
-                <p>Sunny</p>
-            </div>
-            <div class="filters">
-                <i class="fa-regular fa-snowflake"></i>
-                <p>Artic</p>
-            </div>
-            <div class="filters">
-                <i class="fa-solid fa-tree"></i>
-                <p>Jungle</p>
-            </div>
-            <div class="filters">
-                <i class="fa-solid fa-crow"></i>
-                <p>farms</p>
-            </div>
-            <div class="filters">
-                <i class="fa-solid fa-people-roof"></i>
-                <p>Camping</p>
-            </div>
-            <div class="filters">
-                <i class="fa-solid fa-water"></i>
-                <p>Beach</p>
-            </div>
-        </div>
         <div class="row row-cols-lg-3 row-cols-md-3 row-cols-sm-1 mt-2">
-            <% for(let listings of allListings){  %>
-                <a href="/listings/<%= listings._id %>" class="listing-link">
+            <% for(let listings of data){  %>
+                <a href="/api/v1/events/individual/<%= listings._id %>" class="listing-link">
                     <div class="card col listing-card" >
-                        <img src="<%= listings.image.url %>" class="card-img-top" alt="listings" style="height: 20rem;">
+                        <img src="<%= listings.image %>" class="card-img-top" alt="listings" style="height: 20rem;">
                         <div class="card-img-overlay">abcd</div>
                         <div class="card-body">
                           <p class="card-text">
@@ -88,10 +50,6 @@
                 </a>
               <% } %>
         </div>
-        <!-- <ul>
-            <% for(let listings of allListings){  %>
-               <li><a href="/listings/<%= listings._id %>"><%= listings.title %></a></li> </a>
-                <% } %>
-        </ul> -->
+      
     
 </body>
