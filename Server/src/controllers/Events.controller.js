@@ -20,6 +20,7 @@ const showlistings=asyncHandler(async(req,res)=>{
     //     new ApiResponse(200,data,"Data sent successfully")
     // )
     //Rendering an Ejs template
+    req.flash("success","Welcome Back!!");
     res.status(200).render("listings/index.ejs", { data });
 })
 
@@ -48,7 +49,7 @@ const createlistings=asyncHandler(async(req,res)=>{
         price,
         location 
     })
-
+    req.flash("success","New Event created");
     res.redirect("/api/v1/events/list");
     // res.status(200).json(
     //     new ApiResponse(200,newevent,"New Event created successfully")
@@ -89,6 +90,7 @@ const updatelistings=asyncHandler(async(req,res)=>{
                 price: price || existingEvent.price,
                 location: location || existingEvent.location,
     },{new:true})
+    req.flash("success","Event updated successfully");
     res.status(200).redirect("/api/v1/events/list")
     // res.status(200).json(
     //     new ApiResponse(200,updatedEvent,"Event Updated successfully")
@@ -101,6 +103,7 @@ const deletelistings=asyncHandler(async(req,res)=>{
     if(!deletedEvent){
         throw new ApiError(404,"Event not found")
     }
+    req.flash("error","Event Deleted successfully!!");
     res.status(200).redirect("/api/v1/events/list")
     // res.status(200).json(
     //     new ApiResponse(200,deletedEvent," Event deleted successfully")

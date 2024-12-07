@@ -2,8 +2,19 @@ import express,{urlencoded} from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import methodOverride from "method-override";
-
 const app=express();
+//Express-session middleware
+import session from "express-session";
+app.use(session({
+    secret: 'mysecretsupercode',
+    resave: false,
+    saveUninitialized: true,
+  }))
+app.use(cookieParser());//middleware to parse cookies
+//Flash package to display flash messages to the user
+import flash from "connect-flash";
+app.use(flash());
+//cors middleware
 app.use(cors({
     origin:process.env.CORS_ORIGIN,//Accept requests from these origin routes only
     credentials:true
@@ -17,13 +28,19 @@ const __dirname = path.dirname(__filename);
 app.engine('ejs', engine);
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
-
+//middleware to handle PUT and DELETE requests
 app.use(methodOverride("_method"));
-
+//middleware to handle payload on req object
 app.use(express.json({limit:"20kb"}));
 app.use(express.urlencoded({extended:true}));
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(cookieParser());
+//use of local variable of response object
+app.use((req, res, next) => {
+    res.locals.success = req.flash('success');
+    res.locals.error = req.flash('error');
+    // res.locals.currUser = req.user;
+    next();
+})
 
 //Register and Login  a user
 import userRouter from "./routes/User.routes.js"
