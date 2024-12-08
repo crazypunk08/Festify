@@ -18,13 +18,14 @@
               </div>
             <div class="navbar-nav ms-auto d-flex justify-content-center align-items-center ">
                 <a class="nav-link" href="/api/v1/events/create ">Add new Event</a>
-                
+                <% if(!currUser) {%>
                     <a class="nav-link "  href="/api/v1/users/register"><b class="btn btn-outline-primary ">Sign up</b></a>
                     <a class="nav-link" href="/api/v1/users/login"><b class="btn btn-outline-success ">Log in</b></a>
-              
-            
-                <a class="nav-link " href="/api/v1/users/logout"><b class="btn btn-outline-danger ">Log out</b></a>
-                
+                    <% } %> 
+                    <% if(currUser) { %>
+                <form action="/api/v1/users/logout" method="POST">
+                    <button type="submit" class="btn btn-outline-danger">Log out</button></form>
+                    <% } %>   
             </div>
         </div>
     </div>

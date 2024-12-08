@@ -61,10 +61,12 @@ const registeruser=asyncHandler(async(req,res)=>{
     if(!createduser){
         throw ApiError(500,"Error while Registering the user");
     }
+    req.flash("success","Registration Successfull");
+    res.redirect("/api/v1/users/login");
     //return response
-    return res.status(200).json(
-        new ApiResponse(200,createduser,"User registered successfully")
-    )
+    // return res.status(200).json(
+    //     new ApiResponse(200,createduser,"User registered successfully")
+    // )
 })
 
 
@@ -94,7 +96,7 @@ const loginUser=asyncHandler(async(req,res)=>{
         throw new ApiError(400,"Password Incorrect");
     }
     //If everything is correct generate Access and refresh token
-    const {accessToken,refreshToken}=generateAccessAndRefreshTokens(user._id)
+    const {accessToken,refreshToken}=await generateAccessAndRefreshTokens(user._id)
     const loggedInUser=await User.findById(user._id).select("-password -refreshToken");
 
     //Setting these options makes cookie modifyable only through server side
@@ -102,6 +104,12 @@ const loginUser=asyncHandler(async(req,res)=>{
     httpOnly:true,
     secure:true
     }
+    req.flash("success","Login Successfull");
+    return res
+    .status(200)
+    .cookie("accessToken", accessToken, options)
+    .cookie("refreshToken", refreshToken, options)
+    .redirect("/api/v1/events/list");
     return res
     .status(200)
     .cookie("accessToken",accessToken,options)
@@ -132,12 +140,17 @@ const logoutUser=asyncHandler(async(req,res)=>{
         httpOnly:true,
         secure:true
      }
-  
+     
      return res
      .status(200)
      .clearCookie("accessToken",options)
      .clearCookie("refreshToken",options)
-     .json(new ApiResponse(200,{},"User logged out"))
+     .redirect("/api/v1/users/login");
+    //  return res
+    //  .status(200)
+    //  .clearCookie("accessToken",options)
+    //  .clearCookie("refreshToken",options)
+    //  .json(new ApiResponse(200,{},"User logged out"))
 })
 //End point to refresh access
 const refreshAccessToken=asyncHandler(async(req,res)=>{
@@ -167,19 +180,20 @@ const refreshAccessToken=asyncHandler(async(req,res)=>{
        secure:true
     }
     const {accessToken,newrefreshToken}=await generateAccessAndRefreshTokens(user._id);
+   
  
-    return res
-    .status(200)
-    .cookie("accessToken",accessToken,options)
-    .cookie("refreshToken",newrefreshToken,options)
-    .json(
-       new ApiResponse(
-          200,{
-             accessToken,newrefreshToken
-          },
-          "Access token refreshed"
-       )
-    )
+    // return res
+    // .status(200)
+    // .cookie("accessToken",accessToken,options)
+    // .cookie("refreshToken",newrefreshToken,options)
+    // .json(
+    //    new ApiResponse(
+    //       200,{
+    //          accessToken,newrefreshToken
+    //       },
+    //       "Access token refreshed"
+    //    )
+    // )
  })
 
 export {registeruser,loginUser,logoutUser,refreshAccessToken,showsignup,showLogin};

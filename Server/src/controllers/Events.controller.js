@@ -27,6 +27,7 @@ const showlistings=asyncHandler(async(req,res)=>{
 
 //--------------Create an Event-------------------
 const renderNewform=(req,res)=>{
+    console.log(req.cookies.accessToken)
     res.render("listings/new.ejs");
 }
 const createlistings=asyncHandler(async(req,res)=>{
@@ -109,5 +110,6 @@ const deletelistings=asyncHandler(async(req,res)=>{
     //     new ApiResponse(200,deletedEvent," Event deleted successfully")
     // )
 })
+
 
 export {showlistings,updatelistings,createlistings,deletelistings,renderNewform,showEvent,updateform}

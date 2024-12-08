@@ -30,9 +30,9 @@ const userschema=new Schema({
     //We will ask the user what is his Role (Student,Admin,Faculty,Participant)
     role: {
         type: String,
-        enum: ['Student', 'Admin', 'Faculty', 'Participant'], // Allowed values
+        enum: ['Gitian', 'Participant'], // Allowed values
         required: true,
-        default: 'Student' 
+        default: 'Gitian' 
     }
 
 },{timestamps:true});

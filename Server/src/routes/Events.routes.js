@@ -2,12 +2,13 @@ import { Router } from "express";//Router is used for routing towards Specific A
 const router=Router();
 import {showlistings,createlistings,updatelistings,deletelistings,renderNewform,updateform,showEvent} from "../controllers/Events.controller.js";
 import {upload} from "../middlewares/multer.middleware.js"
+import {isLoggedIn} from "../middlewares/auth.middleware.js"
 import {verifyadmin} from "../middlewares/admin.middleware.js"
 //default get route to display all events
-router.route("/list").get(showlistings)
-router.route("/individual/:id").get(showEvent)
-//Create a particular listing of event
-router.route("/create").get(renderNewform)
+router.route("/list").get(isLoggedIn,showlistings)
+router.route("/individual/:id").get(isLoggedIn,showEvent)
+//To create a particular event
+router.route("/create").get(isLoggedIn,renderNewform)
 router.route("/create").post(
     upload.fields([
         {
@@ -17,7 +18,7 @@ router.route("/create").post(
         }
     ]),createlistings)
 //Update Event 
-router.route("/update/:id").get(updateform)   
+router.route("/update/:id").get(isLoggedIn,updateform)   
 router.route("/update/:id").put(
         upload.fields([
             {
@@ -27,6 +28,6 @@ router.route("/update/:id").put(
             }
         ]),updatelistings)
 //Delete Event        
-router.route("/delete/:id").delete(deletelistings);
+router.route("/delete/:id").delete(isLoggedIn,deletelistings);
 
 export default router;
