@@ -51,10 +51,11 @@ const registerStudent = asyncHandler(async (req, res) => {
     to: student.email,  // Student's email
     subject: 'Your Student QR Code',  // Subject line
     html: `
-      <h1>Welcome to KLS GOGTE INSTITUTE OF TECHNOLOGY</h1>
+      <h1>Registration for AURA 2025 successfull!!</h1>
       <p>Hello ${student.username},</p>
-      <p>Please find your student QR code attached:</p>
-      <p>Keep this QR code safe. It contains your student credentials.</p>
+      <p>Please find your Event pass attached:</p>
+      <p>Keep this QR code safe. It contains your  credentials do not disclose it to anyone.</p>
+      <p>Carry your college Id card and this pass at entry of event.</p>
     `,
     attachments: [
       {

@@ -2,7 +2,7 @@ import mongoose,{Schema} from "mongoose";
 import jwt from "jsonwebtoken"; //Generate access and refresh token
 import bcrypt from "bcrypt";//Use for hashing of passwords
 
-const userschema=new Schema({
+const adminschema=new Schema({
     username:{
        type:String,
        unique:true,
@@ -23,17 +23,12 @@ const userschema=new Schema({
         required:true,
         trim:true
     },
-    role: {
-        type: String,
-        enum: ['Gitian', 'Participant'], // Allowed values
-        required: true,
-        default: 'Gitian' 
-    }
+    
   
 },{timestamps:true});
 
 //Logic for hashing and storing the password
-userschema.pre("save",async function(next){
+adminschema.pre("save",async function(next){
     if(!this.isModified("password")) return next();
 
     this.password=await bcrypt.hash(this.password,10);//hash the password
@@ -41,14 +36,12 @@ userschema.pre("save",async function(next){
 })
 
 //Generating Access token
-userschema.methods.generateAccessToken= function(){
+adminschema.methods.generateAccessToken= function(){
     return jwt.sign(
         {
             _id:this._id,
-            role:this.role,
             email:this.email,
             username:this.username,
-            fullname:this.fullname
         },
         process.env.ACCESS_TOKEN_SECRET,
         {
@@ -57,7 +50,7 @@ userschema.methods.generateAccessToken= function(){
     )
 }
 //Generating REFRESH  token
-userschema.methods.generateRefreshToken=function(){
+adminschema.methods.generateRefreshToken=function(){
     return jwt.sign(
         {
             _id:this._id,
@@ -69,10 +62,10 @@ userschema.methods.generateRefreshToken=function(){
     )
 }
 //Method to verify password
-userschema.methods.isPasswordCorrect=async function(password){
+adminschema.methods.isPasswordCorrect=async function(password){
     return await bcrypt.compare(password,this.password);
 }
 
 
-export const User=mongoose.model("User",userschema);
+export const Admin=mongoose.model("Admin",adminschema);
 
