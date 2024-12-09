@@ -36,21 +36,20 @@ const registeruser=asyncHandler(async(req,res)=>{
         throw ApiError(400,"User with given username and email already exists");
     }
     //Check for user Photo
-    console.log(req.files)
-    const photoLocalPath=req.files?.photo[0]?.path;//multer will inject this path
-    if(!photoLocalPath){
-        throw ApiError(400,"User Photo is required");
-    }
-    //Upload on Cloudinary
-    const photo=await uploadOnCloudinary(photoLocalPath);
-    console.log(photo);
+    // console.log(req.files)
+    // const photoLocalPath=req.files?.photo[0]?.path;//multer will inject this path
+    // if(!photoLocalPath){
+    //     throw ApiError(400,"User Photo is required");
+    // }
+    // //Upload on Cloudinary
+    // const photo=await uploadOnCloudinary(photoLocalPath);
+    // console.log(photo);
     //Create a user object and save it in database
     const user= await User.create({
         username,
         password,
         email,
         role,
-        photo:photo.url
     })
 
     const createduser=await User.findById(user._id).select(

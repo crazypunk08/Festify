@@ -110,6 +110,7 @@ const deletelistings=asyncHandler(async(req,res)=>{
     //     new ApiResponse(200,deletedEvent," Event deleted successfully")
     // )
 })
+//---------Registering an Gitian-----------
 
 
 export {showlistings,updatelistings,createlistings,deletelistings,renderNewform,showEvent,updateform}

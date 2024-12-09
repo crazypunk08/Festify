@@ -17,10 +17,6 @@ const userschema=new Schema({
         required:true,
         trim:true,
     },
-    photo:{
-        type:String,//Cloudinary url
-        required:true
-    },
     email:{
         type:String,
         unique:true,
