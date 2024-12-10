@@ -17,3 +17,7 @@ dotenv.config({
     console.log("Mongo db connection failed",err);
 })
 
+app.get("/",(req,res)=>{
+    res.redirect("/api/v1/events/list");
+})
+
