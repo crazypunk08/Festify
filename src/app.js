@@ -34,7 +34,9 @@ app.use(methodOverride("_method"));
 app.use(express.json({limit:"20kb"}));
 app.use(express.urlencoded({extended:true}));
 app.use(express.static(path.join(__dirname, 'public')));
-//use of local variable of response object
+
+//Razorpay Intialization
+
 app.use((req, res, next) => {
     res.locals.success = req.flash('success');
     res.locals.error = req.flash('error');

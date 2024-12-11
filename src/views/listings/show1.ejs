@@ -21,7 +21,7 @@
                       <!-- Registration Buttons -->
                       <div class="d-flex flex-column align-items-center mt-4">
                         <!-- Register as a Gitian -->
-                        <form action="/api/v1/users/eventregister" method="POST" class="w-75">
+                        <form action="/api/v1/users/registerStudent" method="POST" class="w-75">
                             <button type="submit" class="btn btn-outline-primary mb-3 py-2" 
                                     style="font-size: 1.1rem; font-weight: 500;">
                                 Register as a Gitian
@@ -29,7 +29,7 @@
                         </form>
 
                         <!-- Register as a Participant -->
-                        <form action="/api/v1/events/register/participant/<%= event._id %>" method="POST" class="w-75">
+                        <form action="/api/v1/users/registerParticipant" method="POST" class="w-75">
                             <button type="submit" class="btn btn-outline-secondary py-2" 
                                     style="font-size: 1.1rem; font-weight: 500;">
                                 Register as a Participant
