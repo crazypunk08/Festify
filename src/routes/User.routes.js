@@ -29,6 +29,4 @@ router.route('/verify-otp')
 router.route('/registerParticipant').post(isLoggedIn,registerParticipant);
 router.route('/verifyPayment').post(isLoggedIn,verifyPayment);
 
-
-
 export default router;

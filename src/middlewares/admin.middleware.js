@@ -1,27 +1,19 @@
 //Middleware to verify whether the user is Admin or not
 import { ApiError } from "../utils/ApiError.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
-import jwt from "jsonwebtoken";
+import { Admin } from "../models/admin.models.js";
 
-const verifyadmin=asyncHandler(async(req,_,next)=>{
-    try {
-        const token=req.cookies?.accessToken || req.header("Authorization")?.replace("Bearer ","")
-    
-        if (!token) {
-            throw new ApiError(401,"Unauthorized request")
-        }
-    
-        const decodedToken=jwt.verify(token,process.env.ACCESS_TOKEN_SECRET)
-    
-        if(decodedToken?.role!="Admin"){
-            throw new ApiError(401,"Unauthorized request")
-        }
-    
-        req.user=user;
-        next()
-    } catch (error) {
-        throw new ApiError(401,error?.message || "Invalid access token")
+const verifyadmin = asyncHandler(async (req, res, next) => {
+    const { username } = req.user; // Assuming req.user contains the logged-in user's info
+
+    // Check if the username exists in the Admin collection
+    const admin = await Admin.findOne({ username });
+
+    if (!admin) {
+        throw new ApiError(403, "Access denied: User is not an admin");
     }
-})
 
-export {verifyadmin}
+    next(); // Proceed to the next middleware or route handler
+});
+
+export { verifyadmin };

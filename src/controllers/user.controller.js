@@ -23,9 +23,9 @@ const showsignup=(req,res)=>{
 // --------------Register user-----------------
 const registeruser=asyncHandler(async(req,res)=>{
     
-    const {username,password,email,role}=req.body;
+    const {username,password,email,college}=req.body;
     //front-end validation
-    if([username,password,email,role].some((item)=>item?.trim()=="")){
+    if([username,password,email,college].some((item)=>item?.trim()=="")){
         throw ApiError(400,"All fields are required");
     }
     //check if user already exists
@@ -49,7 +49,7 @@ const registeruser=asyncHandler(async(req,res)=>{
         username,
         password,
         email,
-        role,
+        college,
     })
 
     const createduser=await User.findById(user._id).select(

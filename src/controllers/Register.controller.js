@@ -16,15 +16,16 @@ const registerStudent = asyncHandler(async (req, res) => {
   // Extract user ID from req.user (assuming the user is authenticated)
   const studentemail = req.user.email;
   const student = await Student.findOne({ email: studentemail }); // Find the student in the DB
-
+  const user=await User.findById(req.user._id);
   if (!student) {
     req.flash("error","You are not a student of KLS GIT");
     return res.redirect("/api/v1/events/list");
   }
 
   // Check if the QR code is already generated
-  if (student.qrGenerated) {
-    throw new ApiError('QR code has already been generated for this student');
+  if (user.qrGenerated) {
+    req.flash("error","QR code has already been generated for this student");
+    return res.redirect("/api/v1/events/list");
   }
 
   // Step 3: Generate the QR Code
@@ -71,8 +72,8 @@ const registerStudent = asyncHandler(async (req, res) => {
     console.log("Mail sent successfully");
 
     // Update the student record to indicate that the QR code has been generated
-    student.qrGenerated = true;
-    await student.save();
+    user.qrGenerated = true;
+    await user.save();
 
     req.flash("success","QR code sent to your college email id successfully");
     res.status(200).redirect("/api/v1/events/list");
@@ -91,74 +92,6 @@ const registerStudent = asyncHandler(async (req, res) => {
 });
 
 
-const registerParticipant = asyncHandler(async (req, res) => {
-  // Extract user ID from req.user (assuming the user is authenticated)
-  const id = req.user._id;
-  const findUser = await User.findById(id); // Find the student in the DB
 
-
-
-  // Step 3: Generate the QR Code
-  const qrData = {
-    name: findUser.username,
-    college: 'KLS GOGTE INSTITUTE OF TECHNOLOGY',
-    message: 'STUDENT',
-  };
-
-  // Generate the QR code and store it as a file
-  const qrCodeImage = await QRCode.toFile(path.join(__dirname, '../../public/temp', `${findUser.email}_qr.png`), JSON.stringify(qrData));
-
-  // Step 4: Send QR code via email
-  const transporter = nodemailer.createTransport({
-    service: 'Gmail',  // or other service (e.g., Outlook, SMTP server)
-    auth: {
-      user: process.env.EMAIL_USER,  // Your email address
-      pass: process.env.EMAIL_PASS,  // Your email password or app password
-    },
-  });
-
-  const mailOptions = {
-    from: '"KLS GIT Admin" <naren.lakamannavar@gmail.com>',  // Sender address
-    to: findUser.email,  // Student's email
-    subject: 'Your Student QR Code',  // Subject line
-    html: `
-      <h1>Registration for AURA 2025 successfull!!</h1>
-      <p>Hello ${findUser.username},</p>
-      <p>Please find your Event pass attached:</p>
-      <p>Keep this QR code safe. It contains your  credentials do not disclose it to anyone.</p>
-      <p>Carry your college Id card and this pass at entry of event.</p>
-    `,
-    attachments: [
-      {
-        filename: `${findUser.email}_qr.png`,  // Name of the file to be sent
-        path: path.join(__dirname, '../../public/temp', `${findUser.email}_qr.png`),  // Path of the file
-        cid: 'qrCode'  // This is optional, if you need to reference the image inside the email
-      }
-    ]
-  };
-
-  try {
-    await transporter.sendMail(mailOptions);
-    console.log("Mail sent successfully");
-
-    // Update the student record to indicate that the QR code has been generated
-    student.qrGenerated = true;
-    await student.save();
-
-    req.flash("success","QR code sent to your college email id successfully");
-    res.status(200).redirect("/api/v1/events/list");
-  } catch (error) {
-    console.error("Error sending email:", error);
-    res.status(500).json({
-      message: 'Failed to send email. Please try again later.',
-      error: error.message,
-    });
-  } finally {
-    // Delete the temp QR code file after sending the email
-    fs.unlink(path.join(__dirname, '../../public/temp', `${findUser.email}_qr.png`), (err) => {
-      if (err) console.error('Error deleting temp QR code file:', err);
-    });
-  }
-});
 
 export {registerStudent};

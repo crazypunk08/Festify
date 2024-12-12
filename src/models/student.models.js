@@ -14,14 +14,6 @@ const Studentschema=new Schema({
         unique:true,
         required:true,
         trim:true
-    },
-    qrGenerated:{
-        type:Boolean,
-        default:false
-    },
-    qrVerified:{
-        type:Boolean,
-        default:false
     }
 },{timestamps:true});
 

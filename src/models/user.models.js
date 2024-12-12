@@ -23,11 +23,17 @@ const userschema=new Schema({
         required:true,
         trim:true
     },
-    role: {
+    college: {
         type: String,
-        enum: ['Gitian', 'Participant'], // Allowed values
         required: true,
-        default: 'Gitian' 
+    },
+    qrGenerated:{
+        type:Boolean,
+        default:false //false indicated that Qr is to be scanned yet
+    },
+    qrVerified:{
+        type:Boolean,
+        default:false
     }
   
 },{timestamps:true});

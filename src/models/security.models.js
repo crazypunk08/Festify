@@ -2,7 +2,7 @@ import mongoose,{Schema} from "mongoose";
 import jwt from "jsonwebtoken"; //Generate access and refresh token
 import bcrypt from "bcrypt";//Use for hashing of passwords
 
-const adminschema=new Schema({
+const securityschema=new Schema({
     username:{
        type:String,
        unique:true,
@@ -16,15 +16,11 @@ const adminschema=new Schema({
         unique:true,
         required:true,
         trim:true,
-    },
-    isAdmin: {
-        type: Boolean,
-        default: true, // Admins have this set to true by default
-    },
+    }
 },{timestamps:true});
 
 //Logic for hashing and storing the password
-adminschema.pre("save",async function(next){
+securityschema.pre("save",async function(next){
     if(!this.isModified("password")) return next();
 
     this.password=await bcrypt.hash(this.password,10);//hash the password
@@ -32,7 +28,7 @@ adminschema.pre("save",async function(next){
 })
 
 //Generating Access token
-adminschema.methods.generateAccessToken= function(){
+securityschema.methods.generateAccessToken= function(){
     return jwt.sign(
         {
             _id:this._id,
@@ -45,7 +41,7 @@ adminschema.methods.generateAccessToken= function(){
     )
 }
 //Generating REFRESH  token
-adminschema.methods.generateRefreshToken=function(){
+securityschema.methods.generateRefreshToken=function(){
     return jwt.sign(
         {
             _id:this._id,
@@ -57,10 +53,10 @@ adminschema.methods.generateRefreshToken=function(){
     )
 }
 //Method to verify password
-adminschema.methods.isPasswordCorrect=async function(password){
+securityschema.methods.isPasswordCorrect=async function(password){
     return await bcrypt.compare(password,this.password);
 }
 
 
-export const Admin=mongoose.model("Admin",adminschema);
+export const Security=mongoose.model("Security",securityschema);
 

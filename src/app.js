@@ -35,7 +35,7 @@ app.use(express.json({limit:"20kb"}));
 app.use(express.urlencoded({extended:true}));
 app.use(express.static(path.join(__dirname, 'public')));
 
-//Razorpay Intialization
+
 
 app.use((req, res, next) => {
     res.locals.success = req.flash('success');
@@ -51,5 +51,10 @@ app.use("/api/v1/users",userRouter);
 //Handling CRUD operations on Event 
 import eventRouter from "./routes/Events.routes.js"
 app.use("/api/v1/events",eventRouter);
+
+//Register and Login a Admin
+import adminRouter from "./routes/Admin.routes.js"
+app.use("/api/v1/admin",adminRouter);
+
 
 export default app;
