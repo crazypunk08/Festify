@@ -2,7 +2,6 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { Admin } from "../models/admin.models.js";
-import { response } from "express";
 
 const generateAccessAndRefreshTokens = async (adminId) => {
   try {

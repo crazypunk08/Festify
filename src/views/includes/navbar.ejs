@@ -21,8 +21,10 @@
                 <% if (currUser && currUser.isAdmin) { %>
                 <a class="nav-link btn btn-outline-primary rounded-pill ms-2" href="/api/v1/events/create">Add Event</a>
                 <a class="nav-link btn btn-outline-primary rounded-pill ms-2" href="/api/v1/admin/register">Admin Register</a>
+                <a class="nav-link btn btn-outline-primary rounded-pill ms-2" href="/api/v1/security/register">Security Register</a>
                 <% } %>
                 <% if (!currUser) { %>
+                    <a class="nav-link btn btn-outline-primary rounded-pill ms-2" href="/api/v1/security/login">Security Login</a>
                     <a class="nav-link btn btn-outline-primary rounded-pill ms-2" href="/api/v1/admin/login">Admin Login</a>
                     <a class="nav-link btn btn-outline-primary rounded-pill ms-2" href="/api/v1/users/register">Sign up</a>
                     <a class="nav-link btn btn-outline-success rounded-pill ms-2" href="/api/v1/users/login">Log in</a>

@@ -56,5 +56,8 @@ app.use("/api/v1/events",eventRouter);
 import adminRouter from "./routes/Admin.routes.js"
 app.use("/api/v1/admin",adminRouter);
 
+//Register and Login a Security
+import securityRouter from "./routes/Security.routes.js"
+app.use("/api/v1/security",securityRouter);
 
 export default app;

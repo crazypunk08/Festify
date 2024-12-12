@@ -3,7 +3,6 @@ const router=Router();
 import {showlistings,createlistings,updatelistings,deletelistings,renderNewform,updateform,showEvent} from "../controllers/Events.controller.js";
 import {upload} from "../middlewares/multer.middleware.js"
 import {isLoggedIn} from "../middlewares/auth.middleware.js"
-import {verifyadmin} from "../middlewares/admin.middleware.js"
 //default get route to display all events
 router.route("/list").get(isLoggedIn,showlistings)
 router.route("/individual/:id").get(isLoggedIn,showEvent)

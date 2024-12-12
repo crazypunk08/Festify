@@ -3,6 +3,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import jwt from "jsonwebtoken";
 import { User } from "../models/user.models.js";
 import { Admin } from "../models/admin.models.js";
+import { Security } from "../models/security.models.js";
 
 export const isLoggedIn = asyncHandler(async (req, res, next) => {
     try {
@@ -20,6 +21,7 @@ export const isLoggedIn = asyncHandler(async (req, res, next) => {
         let user = await User.findById(decodedToken?._id).select("-password -refreshToken");
         if (!user) {
             user = await Admin.findById(decodedToken?._id).select("-password -refreshToken");
+            user = await Security.findById(decodedToken?._id).select("-password -refreshToken");
         }
 
         if (!user) {
