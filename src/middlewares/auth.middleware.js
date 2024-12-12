@@ -21,7 +21,9 @@ export const isLoggedIn = asyncHandler(async (req, res, next) => {
         let user = await User.findById(decodedToken?._id).select("-password -refreshToken");
         if (!user) {
             user = await Admin.findById(decodedToken?._id).select("-password -refreshToken");
-            user = await Security.findById(decodedToken?._id).select("-password -refreshToken");
+            if(!user){
+                user = await Security.findById(decodedToken?._id).select("-password -refreshToken");
+            } 
         }
 
         if (!user) {
