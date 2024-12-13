@@ -3,27 +3,86 @@
 <head>
   <title>QR Scanner</title>
   <script src="https://unpkg.com/html5-qrcode/minified/html5-qrcode.min.js"></script>
+  <style>
+    #reader {
+      width: 300px;
+      margin: auto;
+    }
+    #result {
+      margin-top: 20px;
+      font-size: 18px;
+      text-align: center;
+      color: green;
+    }
+  </style>
 </head>
 <body>
-  <h1>QR Scanner</h1>
-  <div id="reader" style="width: 300px;"></div>
+  <h1 style="text-align: center;">QR Scanner</h1>
+  <div id="reader"></div>
+  <div id="result">Waiting for QR code...</div>
+
   <script>
     const qrCodeReader = new Html5Qrcode("reader");
+    const resultDiv = document.getElementById("result");
 
-    // Start QR Code Scanner
-    qrCodeReader.start(
-      { facingMode: "environment" }, // Use back camera
-      { fps: 10, qrbox: 250 },
-      qrCodeMessage => {
-        // Redirect to the scanned URL (assumes QR code contains the full URL with /profile/:id)
-        window.location.href = qrCodeMessage;
-      },
-      errorMessage => {
-        console.error("QR Code Scan Error:", errorMessage);
+    function validateAndRedirect(qrCodeMessage) {
+      try {
+        // Assuming the QR code contains a full URL
+        const url = new URL(qrCodeMessage);
+        if (url.hostname === "auraconnect.onrender.com") {
+          // Valid QR code; redirect to the scanned URL
+          window.location.href = qrCodeMessage;
+        } else {
+          // Invalid QR code for your domain
+          resultDiv.textContent = "Invalid QR Code detected. Please scan a valid code.";
+          resultDiv.style.color = "red";
+        }
+      } catch (err) {
+        // QR code is not a valid URL
+        resultDiv.textContent = "Error: Scanned code is not a valid URL.";
+        resultDiv.style.color = "red";
+        console.error("Error validating QR Code:", err);
       }
-    ).catch(err => {
-      console.error("Unable to start QR Code Scanner:", err);
-    });
+    }
+
+    // Start the QR scanner
+    Html5Qrcode.getCameras()
+      .then(devices => {
+        if (devices && devices.length) {
+          // Start scanning using the first available camera
+          qrCodeReader.start(
+            devices[0].id,
+            { fps: 10, qrbox: 250 },
+            qrCodeMessage => {
+              // Display the scanned QR code result
+              resultDiv.textContent = `Scanned QR Code: ${qrCodeMessage}`;
+              resultDiv.style.color = "green";
+
+              // Validate and redirect
+              validateAndRedirect(qrCodeMessage);
+
+              // Stop scanning after a successful read
+              qrCodeReader.stop();
+            },
+            errorMessage => {
+              // Handle errors during scanning
+              console.error("QR Code Scan Error:", errorMessage);
+            }
+          ).catch(err => {
+            console.error("Unable to start QR Code Scanner:", err);
+            resultDiv.textContent = "Error starting QR Code scanner.";
+            resultDiv.style.color = "red";
+          });
+        } else {
+          resultDiv.textContent = "No cameras found.";
+          resultDiv.style.color = "red";
+        }
+      })
+      .catch(err => {
+        console.error("Error accessing cameras:", err);
+        resultDiv.textContent = "Unable to access camera.";
+        resultDiv.style.color = "red";
+      });
   </script>
 </body>
 </html>
