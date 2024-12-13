@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <title>QR Scanner</title>
-  <script src="https://unpkg.com/html5-qrcode/minified/html5-qrcode.min.js"></script>
+  <script src="/js/html5-qrcode.min.js"></script>
   <style>
     #reader {
       width: 300px;
@@ -22,6 +22,7 @@
   <div id="result">Waiting for QR code...</div>
 
   <script>
+    console.log(Html5QrcodeScanner);
     const qrCodeReader = new Html5Qrcode("reader");
     const resultDiv = document.getElementById("result");
 
