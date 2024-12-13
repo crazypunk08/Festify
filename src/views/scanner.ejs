@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>QR Scanner</title>
+  <script src="https://unpkg.com/html5-qrcode/minified/html5-qrcode.min.js"></script>
+</head>
+<body>
+  <h1>QR Scanner</h1>
+  <div id="reader" style="width: 300px;"></div>
+  <script>
+    const qrCodeReader = new Html5Qrcode("reader");
+
+    // Start QR Code Scanner
+    qrCodeReader.start(
+      { facingMode: "environment" }, // Use back camera
+      { fps: 10, qrbox: 250 },
+      qrCodeMessage => {
+        // Redirect to the scanned URL (assumes QR code contains the full URL with /profile/:id)
+        window.location.href = qrCodeMessage;
+      },
+      errorMessage => {
+        console.error("QR Code Scan Error:", errorMessage);
+      }
+    ).catch(err => {
+      console.error("Unable to start QR Code Scanner:", err);
+    });
+  </script>
+</body>
+</html>

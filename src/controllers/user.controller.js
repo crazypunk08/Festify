@@ -195,5 +195,17 @@ const refreshAccessToken=asyncHandler(async(req,res)=>{
     // )
  })
 
-export {registeruser,loginUser,logoutUser,refreshAccessToken,showsignup,showLogin};
+ const profilePage = asyncHandler(async (req, res) => {
+    const { id } = req.params;
+  
+    const user = await User.findById(id);
+    if (!user) {
+      throw new ApiError(404, "User not found");
+    }
+  
+    res.render("users/profile.ejs", { user });
+  });
+  
+
+export {registeruser,loginUser,logoutUser,refreshAccessToken,showsignup,showLogin,profilePage};
 

@@ -1,5 +1,5 @@
 import {Router} from  "express";
-import { registeruser,loginUser,logoutUser,refreshAccessToken,showsignup,showLogin} from "../controllers/user.controller.js";
+import { registeruser,loginUser,logoutUser,refreshAccessToken,showsignup,showLogin,profilePage} from "../controllers/user.controller.js";
 import { registerStudent } from "../controllers/Register.controller.js";
 import { upload } from "../middlewares/multer.middleware.js";
 import {isLoggedIn} from "../middlewares/auth.middleware.js"
@@ -13,7 +13,7 @@ router.route("/login").get(showLogin);
 router.route("/login").post(loginUser);
 router.route("/logout").post(isLoggedIn,logoutUser);
 router.route("/refreshtoken").post(refreshAccessToken);
-
+router.route("/profile/:id").get(profilePage);
 // Route to initiate Student registration
 router.route('/registerStudent')
   .post(isLoggedIn, generateOtp, (req, res) => {

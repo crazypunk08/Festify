@@ -7,6 +7,7 @@ import {asyncHandler} from '../utils/asyncHandler.js';
 import{ApiError} from '../utils/ApiError.js';  // Assuming this is your custom error handler
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
+import {Student} from "../models/student.models.js"
 
 const __filename = fileURLToPath(import.meta.url);  // Get the filename
 const __dirname = dirname(__filename);  // Get the directory name
@@ -29,11 +30,8 @@ const registerStudent = asyncHandler(async (req, res) => {
   }
 
   // Step 3: Generate the QR Code
-  const qrData = {
-    name: student.username,
-    college: 'KLS GOGTE INSTITUTE OF TECHNOLOGY',
-    message: 'STUDENT',
-  };
+  const qrData = `https://auraconnect.onrender.com/api/v1/users/profile/${student._id}`;
+
 
   // Generate the QR code and store it as a file
   const qrCodeImage = await QRCode.toFile(path.join(__dirname, '../../public/temp', `${student.email}_qr.png`), JSON.stringify(qrData));

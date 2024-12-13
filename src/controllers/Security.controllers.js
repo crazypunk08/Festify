@@ -91,7 +91,7 @@ const loginSecurityUser = asyncHandler(async (req, res) => {
     .status(200)
     .cookie("accessToken", accessToken, options)
     .cookie("refreshToken", refreshToken, options)
-    .redirect("/api/v1/events/list");
+    .render("scanner.ejs");
 });
 
 //-------Logout Security User-----------
