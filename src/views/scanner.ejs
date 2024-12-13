@@ -7,6 +7,8 @@
     #reader {
       width: 300px;
       margin: auto;
+      border: 1px solid #ccc;
+      padding: 10px;
     }
     #result {
       margin-top: 20px;
@@ -22,24 +24,30 @@
   <div id="result">Waiting for QR code...</div>
 
   <script>
-    console.log(Html5QrcodeScanner);
+    console.log("Html5Qrcode initialized:", typeof Html5Qrcode);
+
     const qrCodeReader = new Html5Qrcode("reader");
     const resultDiv = document.getElementById("result");
 
     function validateAndRedirect(qrCodeMessage) {
+      console.log("Scanned QR Code:", qrCodeMessage);
       try {
-        // Assuming the QR code contains a full URL
-        const url = new URL(qrCodeMessage);
+        const trimmedMessage = qrCodeMessage.trim();
+        const url = new URL(trimmedMessage);
+
         if (url.hostname === "auraconnect.onrender.com") {
-          // Valid QR code; redirect to the scanned URL
-          window.location.href = qrCodeMessage;
+          // Redirect to the scanned URL if it belongs to the correct domain
+          resultDiv.textContent = "Redirecting to profile...";
+          resultDiv.style.color = "green";
+          window.location.href = trimmedMessage;
         } else {
-          // Invalid QR code for your domain
-          resultDiv.textContent = "Invalid QR Code detected. Please scan a valid code.";
+          // Invalid domain
+          resultDiv.textContent = "Invalid QR Code domain. Please scan a valid code.";
           resultDiv.style.color = "red";
+          console.warn("Invalid QR Code domain:", url.hostname);
         }
       } catch (err) {
-        // QR code is not a valid URL
+        // Error if the QR code message is not a valid URL
         resultDiv.textContent = "Error: Scanned code is not a valid URL.";
         resultDiv.style.color = "red";
         console.error("Error validating QR Code:", err);
@@ -49,37 +57,45 @@
     // Start the QR scanner
     Html5Qrcode.getCameras()
       .then(devices => {
-        if (devices && devices.length) {
-          // Start scanning using the first available camera
+        if (devices && devices.length > 0) {
+          const cameraId = devices[0].id; // Use the first available camera
+          console.log("Using camera:", devices[0].label || "Default Camera");
+
           qrCodeReader.start(
-            devices[0].id,
+            cameraId,
             { fps: 10, qrbox: 250 },
             qrCodeMessage => {
-              // Display the scanned QR code result
+              // Update result and validate the QR code message
               resultDiv.textContent = `Scanned QR Code: ${qrCodeMessage}`;
               resultDiv.style.color = "green";
-
-              // Validate and redirect
               validateAndRedirect(qrCodeMessage);
 
               // Stop scanning after a successful read
-              qrCodeReader.stop();
+              qrCodeReader.stop().catch(err => {
+                console.error("Error stopping QR Code scanner:", err);
+              });
             },
             errorMessage => {
-              // Handle errors during scanning
+              // Log scan errors
               console.error("QR Code Scan Error:", errorMessage);
+              resultDiv.textContent = "Error scanning QR Code. Try again.";
+              resultDiv.style.color = "red";
             }
           ).catch(err => {
+            // Log and display errors during scanner initialization
             console.error("Unable to start QR Code Scanner:", err);
             resultDiv.textContent = "Error starting QR Code scanner.";
             resultDiv.style.color = "red";
           });
         } else {
-          resultDiv.textContent = "No cameras found.";
+          // No cameras found
+          console.error("No cameras found on this device.");
+          resultDiv.textContent = "No cameras found. Please check your device.";
           resultDiv.style.color = "red";
         }
       })
       .catch(err => {
+        // Error accessing cameras
         console.error("Error accessing cameras:", err);
         resultDiv.textContent = "Unable to access camera.";
         resultDiv.style.color = "red";
