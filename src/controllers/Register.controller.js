@@ -14,66 +14,69 @@ const __dirname = dirname(__filename);  // Get the directory name
 
 
 const registerStudent = asyncHandler(async (req, res) => {
-  // Extract user ID from req.user (assuming the user is authenticated)
   const studentemail = req.user.email;
   const student = await Student.findOne({ email: studentemail }); // Find the student in the DB
-  const user=await User.findById(req.user._id);
+  const user = await User.findById(req.user._id);
+
   if (!student) {
-    req.flash("error","You are not a student of KLS GIT");
+    req.flash("error", "You are not a student of KLS GIT");
     return res.redirect("/api/v1/events/list");
   }
 
   // Check if the QR code is already generated
   if (user.qrGenerated) {
-    req.flash("error","QR code has already been generated for this student");
+    req.flash("error", "QR code has already been generated for this student");
     return res.redirect("/api/v1/events/list");
   }
 
-  // Step 3: Generate the QR Code
-  const qrData = `https://auraconnect.onrender.com/api/v1/users/profile/${student._id}`;
-
+  // Generate the QR Code data (directly, without JSON.stringify)
+  const qrData = `/api/v1/users/profile/${user._id}`;
 
   // Generate the QR code and store it as a file
-  const qrCodeImage = await QRCode.toFile(path.join(__dirname, '../../public/temp', `${student.email}_qr.png`), JSON.stringify(qrData));
+  const qrCodeImagePath = path.join(
+    __dirname,
+    '../../public/temp',
+    `${student.email}_qr.png`
+  );
+  await QRCode.toFile(qrCodeImagePath, qrData);
 
-  // Step 4: Send QR code via email
+  // Send QR code via email
   const transporter = nodemailer.createTransport({
-    service: 'Gmail',  // or other service (e.g., Outlook, SMTP server)
+    service: 'Gmail',
     auth: {
-      user: process.env.EMAIL_USER,  // Your email address
-      pass: process.env.EMAIL_PASS,  // Your email password or app password
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS,
     },
   });
 
   const mailOptions = {
-    from: '"KLS GIT Admin" <naren.lakamannavar@gmail.com>',  // Sender address
-    to: student.email,  // Student's email
-    subject: 'Your Student QR Code',  // Subject line
+    from: '"KLS GIT Admin" <naren.lakamannavar@gmail.com>',
+    to: student.email,
+    subject: 'Your Student QR Code',
     html: `
-      <h1>Registration for AURA 2025 successfull!!</h1>
+      <h1>Registration for AURA 2025 successful!</h1>
       <p>Hello ${student.username},</p>
       <p>Please find your Event pass attached:</p>
-      <p>Keep this QR code safe. It contains your  credentials do not disclose it to anyone.</p>
-      <p>Carry your college Id card and this pass at entry of event.</p>
+      <p>Keep this QR code safe. It contains your credentials. Do not disclose it to anyone.</p>
+      <p>Carry your college ID card and this pass at the event entrance.</p>
     `,
     attachments: [
       {
-        filename: `${student.email}_qr.png`,  // Name of the file to be sent
-        path: path.join(__dirname, '../../public/temp', `${student.email}_qr.png`),  // Path of the file
-        cid: 'qrCode'  // This is optional, if you need to reference the image inside the email
-      }
-    ]
+        filename: `${student.email}_qr.png`,
+        path: qrCodeImagePath,
+      },
+    ],
   };
 
   try {
     await transporter.sendMail(mailOptions);
     console.log("Mail sent successfully");
 
-    // Update the student record to indicate that the QR code has been generated
+    // Mark QR code as generated for the user
     user.qrGenerated = true;
     await user.save();
 
-    req.flash("success","QR code sent to your college email id successfully");
+    req.flash("success", "QR code sent to your college email id successfully");
     res.status(200).redirect("/api/v1/events/list");
   } catch (error) {
     console.error("Error sending email:", error);
@@ -82,12 +85,13 @@ const registerStudent = asyncHandler(async (req, res) => {
       error: error.message,
     });
   } finally {
-    // Delete the temp QR code file after sending the email
-    fs.unlink(path.join(__dirname, '../../public/temp', `${student.email}_qr.png`), (err) => {
+    // Delete the temporary QR code file
+    fs.unlink(qrCodeImagePath, (err) => {
       if (err) console.error('Error deleting temp QR code file:', err);
     });
   }
 });
+
 
 
 

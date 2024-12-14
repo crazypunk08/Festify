@@ -28,32 +28,22 @@
 
     const qrCodeReader = new Html5Qrcode("reader");
     const resultDiv = document.getElementById("result");
-
     function validateAndRedirect(qrCodeMessage) {
       console.log("Scanned QR Code:", qrCodeMessage);
-      try {
-        const trimmedMessage = qrCodeMessage.trim();
-        const url = new URL(trimmedMessage);
-
-        if (url.hostname === "auraconnect.onrender.com") {
-          // Redirect to the scanned URL if it belongs to the correct domain
-          resultDiv.textContent = "Redirecting to profile...";
-          resultDiv.style.color = "green";
-          window.location.href = trimmedMessage;
-        } else {
-          // Invalid domain
-          resultDiv.textContent = "Invalid QR Code domain. Please scan a valid code.";
-          resultDiv.style.color = "red";
-          console.warn("Invalid QR Code domain:", url.hostname);
-        }
-      } catch (err) {
-        // Error if the QR code message is not a valid URL
-        resultDiv.textContent = "Error: Scanned code is not a valid URL.";
+    
+      // Ensure the QR code message is valid and not empty
+      if (!qrCodeMessage || typeof qrCodeMessage !== "string") {
+        resultDiv.textContent = "Invalid QR Code scanned.";
         resultDiv.style.color = "red";
-        console.error("Error validating QR Code:", err);
+        return;
       }
+    
+      // Redirect to the scanned URL
+      resultDiv.textContent = "Redirecting to profile...";
+      resultDiv.style.color = "green";
+      window.location.href = qrCodeMessage;
     }
-
+    
     // Start the QR scanner
     Html5Qrcode.getCameras()
       .then(devices => {
