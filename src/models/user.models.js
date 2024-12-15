@@ -17,6 +17,10 @@ const userschema=new Schema({
         required:true,
         trim:true,
     },
+    image:{
+        type:String,
+        required:true
+    },
     email:{
         type:String,
         unique:true,

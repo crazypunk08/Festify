@@ -9,13 +9,22 @@ import {updateQrVerified} from "../middlewares/verifyQr.middleware.js";
 import { registerParticipant,verifyPayment} from '../controllers/paymentController.js'
 const router=Router();//Creating an instance or router
 router.route("/register").get(showsignup);//route for getting an Ejs template
-router.route("/register").post( registeruser)
+//register user
+router.route("/register").post(upload.fields([
+  {
+      name:"image",
+      maxCount:1
+  }
+]), registeruser);
+//render login page
 router.route("/login").get(showLogin);
+//trigger login controller
 router.route("/login").post(loginUser);
+//trigger logout controller
 router.route("/logout").post(isLoggedIn,logoutUser);
 router.route("/refreshtoken").post(refreshAccessToken);
 //route to show profile page
-router.route("/profile/:id").get(updateQrVerified,profilePage);
+router.route("/profile/:id").get(isLoggedIn,updateQrVerified,profilePage);
 // Route to initiate Student registration
 router.route('/registerStudent')
   .post(isLoggedIn, generateOtp, (req, res) => {

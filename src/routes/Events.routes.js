@@ -4,7 +4,7 @@ import {showlistings,createlistings,updatelistings,deletelistings,renderNewform,
 import {upload} from "../middlewares/multer.middleware.js"
 import {isLoggedIn} from "../middlewares/auth.middleware.js"
 //default get route to display all events
-router.route("/list").get(isLoggedIn,showlistings)
+router.route("/list").get(showlistings);
 router.route("/individual/:id").get(isLoggedIn,showEvent)
 //To create a particular event
 router.route("/create").get(isLoggedIn,renderNewform)
