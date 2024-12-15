@@ -5,7 +5,6 @@ import {uploadOnCloudinary} from "../utils/cloudinary.js";
 import {Event} from "../models/event.models.js";
 import {Student} from "../models/student.models.js"
 
-
 const showEvent=async (req,res)=>{
     let {id}=req.params;
     const event=await Event.findById(id)
@@ -15,6 +14,13 @@ const showEvent=async (req,res)=>{
     res.render("listings/show1.ejs",{event,isStudent})
 }
 ///-----------List all Events
+const showclient =asyncHandler(async(req,res)=>{
+    const data= await Event.find({});
+    res.status(200)
+    .json(
+        new ApiResponse(200,data,"Data sent successfully")
+    )
+})
 const showlistings=asyncHandler(async(req,res)=>{
     const data= await Event.find({});
     //Sending Json Response
@@ -116,4 +122,4 @@ const deletelistings=asyncHandler(async(req,res)=>{
 //---------Registering an Gitian-----------
 
 
-export {showlistings,updatelistings,createlistings,deletelistings,renderNewform,showEvent,updateform}
+export {showlistings,updatelistings,createlistings,deletelistings,renderNewform,showEvent,updateform,showclient}

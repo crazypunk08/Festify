@@ -1,8 +1,9 @@
 import { Router } from "express";//Router is used for routing towards Specific API endpoints
 const router=Router();
-import {showlistings,createlistings,updatelistings,deletelistings,renderNewform,updateform,showEvent} from "../controllers/Events.controller.js";
+import {showlistings,createlistings,updatelistings,deletelistings,renderNewform,updateform,showEvent,showclient} from "../controllers/Events.controller.js";
 import {upload} from "../middlewares/multer.middleware.js"
 import {isLoggedIn} from "../middlewares/auth.middleware.js"
+router.route("/client").get(showclient);
 //default get route to display all events
 router.route("/list").get(showlistings);
 router.route("/individual/:id").get(isLoggedIn,showEvent)
