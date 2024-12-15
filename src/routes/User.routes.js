@@ -5,7 +5,7 @@ import { upload } from "../middlewares/multer.middleware.js";
 import {isLoggedIn} from "../middlewares/auth.middleware.js"
 import { generateOtp } from "../middlewares/genotp.middleware.js";
 import { validateOtp } from "../middlewares/validateotp.middleware.js";
-import {verifyQr} from "../middlewares/verifyQr.middleware.js";
+import {updateQrVerified} from "../middlewares/verifyQr.middleware.js";
 import { registerParticipant,verifyPayment} from '../controllers/paymentController.js'
 const router=Router();//Creating an instance or router
 router.route("/register").get(showsignup);//route for getting an Ejs template
@@ -15,7 +15,7 @@ router.route("/login").post(loginUser);
 router.route("/logout").post(isLoggedIn,logoutUser);
 router.route("/refreshtoken").post(refreshAccessToken);
 //route to show profile page
-router.route("/profile/:id").get(verifyQr,profilePage);
+router.route("/profile/:id").get(updateQrVerified,profilePage);
 // Route to initiate Student registration
 router.route('/registerStudent')
   .post(isLoggedIn, generateOtp, (req, res) => {

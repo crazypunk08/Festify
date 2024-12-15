@@ -18,6 +18,12 @@ const razorpay = new Razorpay({
 });
 
 const registerParticipant = asyncHandler(async (req, res) => {
+  const user=req.user;
+  const newuser=await User.findById(user._id);
+  if(newuser.qrGenerated){
+    req.flash("error","You have already registered for this event");
+    return res.redirect("/api/v1/events/list");
+  }
   const amount = 500 * 100; // ₹500 in paise
   const currency = 'INR';
 
@@ -61,14 +67,11 @@ const verifyPayment = asyncHandler(async (req, res) => {
     return res.status(404).json({ message: 'User not found' });
   }
 
-  const qrData = {
-    name: user.username,
-    college: 'KLS GOGTE INSTITUTE OF TECHNOLOGY',
-    message: 'STUDENT',
-  };
+  // Generate the QR Code data (directly, without JSON.stringify)
+  const qrData = `/api/v1/users/profile/${user._id}`;
 
   const qrFilePath = path.join(__dirname, '../../public/temp', `${user.email}_qr.png`);
-  await QRCode.toFile(qrFilePath, JSON.stringify(qrData));
+  await QRCode.toFile(qrFilePath, qrData);
 
   const transporter = nodemailer.createTransport({
     service: 'Gmail',
@@ -98,8 +101,8 @@ const verifyPayment = asyncHandler(async (req, res) => {
   try {
     await transporter.sendMail(mailOptions);
 
-    // user.qrGenerated = true;
-    // await user.save();
+    user.qrGenerated = true;
+    await user.save();
 
     res.status(200).json({ message: 'Payment verified and QR code sent' });
   } catch (error) {

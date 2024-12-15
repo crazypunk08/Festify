@@ -1,13 +1,57 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>User Profile</title>
-  <link rel="stylesheet" href="/styles.css"> <!-- Link to external CSS if needed -->
-</head>
-<body>
-  <div class="container">
+<% layout("/layouts/boilerplate") %>
+
+<style>
+  /* Scoped styles for the profile page */
+  .profile-page {
+    font-family: 'Arial', sans-serif;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+
+  .profile-page .profile-container {
+    background-color: #fff;
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+    padding: 30px;
+    border-radius: 15px;
+    width: 400px;
+    text-align: center;
+    transform: scale(1);
+    transition: transform 0.2s ease-in-out;
+  }
+
+  .profile-page .profile-container:hover {
+    transform: scale(1.02);
+  }
+
+  .profile-page h1 {
+    color: #343a40;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+
+  .profile-page .profile-details {
+    text-align: left;
+    font-size: 16px;
+    color: #495057;
+  }
+
+  .profile-page .profile-details p {
+    margin: 10px 0;
+    line-height: 1.5;
+  }
+
+  .profile-page .profile-details p strong {
+    color: #343a40;
+  }
+</style>
+
+<div class="profile-page">
+  <div class="profile-container">
     <h1>User Profile</h1>
     <div class="profile-details">
       <p><strong>Username:</strong> <%= user.username %></p>
@@ -15,5 +59,4 @@
       <p><strong>College:</strong> <%= user.college %></p>
     </div>
   </div>
-</body>
-</html>
+</div>

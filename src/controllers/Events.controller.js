@@ -3,13 +3,16 @@ import {ApiError} from "../utils/ApiError.js";
 import {ApiResponse} from "../utils/ApiResponse.js";
 import {uploadOnCloudinary} from "../utils/cloudinary.js";
 import {Event} from "../models/event.models.js";
-
+import {Student} from "../models/student.models.js"
 
 
 const showEvent=async (req,res)=>{
     let {id}=req.params;
     const event=await Event.findById(id)
-    res.render("listings/show1.ejs",{event})
+    const user=req.user;
+    const isStudent =await Student.findOne({email:user.email});
+    console.log(isStudent);
+    res.render("listings/show1.ejs",{event,isStudent})
 }
 ///-----------List all Events
 const showlistings=asyncHandler(async(req,res)=>{
