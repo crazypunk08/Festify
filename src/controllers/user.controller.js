@@ -89,7 +89,7 @@ const loginUser=asyncHandler(async(req,res)=>{
 
     if(!user){
         req.flash("error","User not exist!!");
-        res.redirect("/api/v1/users/register");
+        return res.redirect("/api/v1/users/register");
     }
     console.log(user);
     //if user found then check the validity of password

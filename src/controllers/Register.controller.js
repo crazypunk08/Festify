@@ -74,7 +74,7 @@ const registerStudent = asyncHandler(async (req, res) => {
 
     // Mark QR code as generated for the user
     user.qrGenerated = true;
-    await user.save();
+    await user.save({validateBeforeSave:false});
 
     req.flash("success", "QR code sent to your college email id successfully");
     res.status(200).redirect("/api/v1/events/list");

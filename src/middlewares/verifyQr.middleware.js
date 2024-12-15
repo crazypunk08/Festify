@@ -16,7 +16,7 @@ const updateQrVerified = asyncHandler(async (req, res, next) => {
     res.render("scanner.ejs");
   } else {
     user.qrVerified = true; // Mark as verified
-    await user.save();
+    await user.save({validateBeforeSave:false});
     req.flash('success', ` ${user.username} marked as  verified.`);
   }
 

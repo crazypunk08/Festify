@@ -102,7 +102,7 @@ const verifyPayment = asyncHandler(async (req, res) => {
     await transporter.sendMail(mailOptions);
 
     user.qrGenerated = true;
-    await user.save();
+    await user.save({validateBeforeSave:false});
 
     res.status(200).json({ message: 'Payment verified and QR code sent' });
   } catch (error) {
