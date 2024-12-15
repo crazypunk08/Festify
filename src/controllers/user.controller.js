@@ -33,7 +33,8 @@ const registeruser=asyncHandler(async(req,res)=>{
         $or:[{username},{email}]
     })
     if(existeduser){
-        throw ApiError(400,"User with given username and email already exists");
+        req.flash("error","User with given  username or email already exists");
+        res.redirect("/api/v1/users/register");
     }
     //Check for user Photo
     console.log(req.files)
@@ -87,14 +88,16 @@ const loginUser=asyncHandler(async(req,res)=>{
     })
 
     if(!user){
-        throw new ApiError(404,"User not found");
+        req.flash("error","User not exist!!");
+        res.redirect("/api/v1/users/register");
     }
     console.log(user);
     //if user found then check the validity of password
     const isvalidpassword=await user.isPasswordCorrect(password);
     console.log(isvalidpassword);
     if(!isvalidpassword){
-        throw new ApiError(400,"Password Incorrect");
+        req.flash("error","Password Incorrect");
+        res.redirect("/api/v1/users/login");
     }
     //If everything is correct generate Access and refresh token
     const {accessToken,refreshToken}=await generateAccessAndRefreshTokens(user._id)
