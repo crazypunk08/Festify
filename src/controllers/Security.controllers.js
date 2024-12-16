@@ -86,7 +86,7 @@ const loginSecurityUser = asyncHandler(async (req, res) => {
     secure: true,
   };
 
-  req.flash("success", "Login successful");
+  // req.flash("success", "Login successful");
   return res
     .status(200)
     .cookie("accessToken", accessToken, options)

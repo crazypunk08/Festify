@@ -14,7 +14,7 @@ const updateQrVerified = asyncHandler(async (req, res, next) => {
   if (user.qrVerified) {
     req.flash('error', `User ${user.username}'s QR code already verified.`);
     res.render("scanner.ejs");
-  } else {
+  }else {
     user.qrVerified = true; // Mark as verified
     await user.save({validateBeforeSave:false});
     req.flash('success', ` ${user.username} marked as  verified.`);

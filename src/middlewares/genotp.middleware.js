@@ -9,7 +9,7 @@ const generateOtp = asyncHandler(async (req, res, next) => {
   const studentemail = req.user.email;
 
   // Generate a 6-digit numeric OTP
-  const otp = otpGenerator.generate(6, { upperCase: false, specialChars: false });
+  const otp = Math.floor(1000 + Math.random() * 9000);
 
   // Store OTP in memory with expiration (5 minutes)
   otpStore.set(studentemail, { otp, expiresAt: Date.now() + 5 * 60 * 1000 });

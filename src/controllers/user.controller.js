@@ -21,54 +21,121 @@ const showsignup=(req,res)=>{
     res.render("users/signup.ejs");
 };
 // --------------Register user-----------------
-const registeruser=asyncHandler(async(req,res)=>{
+const registeruser = asyncHandler(async (req, res,next) => {
+    const { username, password, email, college } = req.body;
+  
+    // Front-end validation
+    if ([username, password, email, college].some((item) => item?.trim() == "")) {
+      throw new ApiError(400, "All fields are required");
+    }
+  
+    // Check if user already exists
+    const existeduser = await User.findOne({
+      $or: [{ username }, { email }],
+    });
+    if (existeduser) {
+      req.flash("error", "User with given username or email already exists");
+      return res.redirect("/api/v1/users/register");
+    }
     
-    const {username,password,email,college}=req.body;
-    //front-end validation
-    if([username,password,email,college].some((item)=>item?.trim()=="")){
-        throw ApiError(400,"All fields are required");
+    const photoLocalPath = req.files?.image?.[0]?.path; // multer injects this path
+    if (!photoLocalPath) {
+      throw new ApiError(400, "User Photo is required");
     }
-    //check if user already exists
-    const existeduser= await User.findOne({
-        $or:[{username},{email}]
-    })
-    if(existeduser){
-        req.flash("error","User with given  username or email already exists");
-        res.redirect("/api/v1/users/register");
-    }
-    //Check for user Photo
-    console.log(req.files)
-    const photoLocalPath=req.files?.image[0]?.path;//multer will inject this path
-    if(!photoLocalPath){
-        throw ApiError(400,"User Photo is required");
-    }
-    //Upload on Cloudinary
-    const image=await uploadOnCloudinary(photoLocalPath);
-    console.log(image);
-    //Create a user object and save it in database
-    const user= await User.create({
-        username,
-        password,
-        image:image.url,
-        email,
-        college,
-    })
 
-    const createduser=await User.findById(user._id).select(
-        "-password -refreshToken"
-    )
+    // Save user details temporarily in session (without storing in DB)
+    req.session.tempUser = { username, password, email, college, image: photoLocalPath };
+  
+    // Generate OTP and send to the user's email
+    next(); // Pass control to the `generateOtp` middleware
+  });
 
-    //check for user creation
-    if(!createduser){
-        throw ApiError(500,"Error while Registering the user");
+  const completeRegistration = asyncHandler(async (req, res) => {
+    const { username, password, email, college, image } = req.session.tempUser;
+  
+    // Check if photo was uploaded
+    // const photoLocalPath = req.files?.image[0]?.path; // multer will inject this path
+    // if (!photoLocalPath) {
+    //   throw new ApiError(400, "User Photo is required");
+    // }
+  
+    // Upload photo to Cloudinary
+    const uploadedImage = await uploadOnCloudinary(image);
+  
+    // Create a user object and save it in the database
+    const user = await User.create({
+      username,
+      password,
+      image: uploadedImage.url,
+      email,
+      college,
+    });
+  
+    const createdUser = await User.findById(user._id).select(
+      "-password -refreshToken"
+    );
+  
+    // Check for user creation
+    if (!createdUser) {
+      throw new ApiError(500, "Error while Registering the user");
     }
-    req.flash("success","Registration Successfull");
+  
+    // Clear temporary session data
+    delete req.session.tempUser;
+  
+    req.flash("success", "Registration Successful");
     res.redirect("/api/v1/users/login");
-    //return response
-    // return res.status(200).json(
-    //     new ApiResponse(200,createduser,"User registered successfully")
-    // )
-})
+  });
+    
+
+// const registeruser=asyncHandler(async(req,res)=>{
+    
+//     const {username,password,email,college}=req.body;
+//     //front-end validation
+//     if([username,password,email,college].some((item)=>item?.trim()=="")){
+//         throw ApiError(400,"All fields are required");
+//     }
+//     //check if user already exists
+//     const existeduser= await User.findOne({
+//         $or:[{username},{email}]
+//     })
+//     if(existeduser){
+//         req.flash("error","User with given  username or email already exists");
+//         res.redirect("/api/v1/users/register");
+//     }
+//     //Check for user Photo
+//     console.log(req.files)
+//     const photoLocalPath=req.files?.image[0]?.path;//multer will inject this path
+//     if(!photoLocalPath){
+//         throw ApiError(400,"User Photo is required");
+//     }
+//     //Upload on Cloudinary
+//     const image=await uploadOnCloudinary(photoLocalPath);
+//     console.log(image);
+//     //Create a user object and save it in database
+//     const user= await User.create({
+//         username,
+//         password,
+//         image:image.url,
+//         email,
+//         college,
+//     })
+
+//     const createduser=await User.findById(user._id).select(
+//         "-password -refreshToken"
+//     )
+
+//     //check for user creation
+//     if(!createduser){
+//         throw ApiError(500,"Error while Registering the user");
+//     }
+//     req.flash("success","Registration Successfull");
+//     res.redirect("/api/v1/users/login");
+//     //return response
+//     // return res.status(200).json(
+//     //     new ApiResponse(200,createduser,"User registered successfully")
+//     // )
+// })
 
 
 
@@ -108,7 +175,7 @@ const loginUser=asyncHandler(async(req,res)=>{
     httpOnly:true,
     secure:true
     }
-    req.flash("success","Login Successfull");
+    // req.flash("success","Login Successfull");
     return res
     .status(200)
     .cookie("accessToken", accessToken, options)
@@ -212,5 +279,5 @@ const refreshAccessToken=asyncHandler(async(req,res)=>{
   });
   
 
-export {registeruser,loginUser,logoutUser,refreshAccessToken,showsignup,showLogin,profilePage};
+export {registeruser, completeRegistration,loginUser,logoutUser,refreshAccessToken,showsignup,showLogin,profilePage};
 

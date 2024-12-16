@@ -1,5 +1,5 @@
 import {Router} from  "express";
-import { registeruser,loginUser,logoutUser,refreshAccessToken,showsignup,showLogin,profilePage} from "../controllers/user.controller.js";
+import { registeruser,completeRegistration,loginUser,logoutUser,refreshAccessToken,showsignup,showLogin,profilePage} from "../controllers/user.controller.js";
 import { registerStudent } from "../controllers/Register.controller.js";
 import { upload } from "../middlewares/multer.middleware.js";
 import {isLoggedIn} from "../middlewares/auth.middleware.js"
@@ -7,15 +7,13 @@ import { generateOtp } from "../middlewares/genotp.middleware.js";
 import { validateOtp } from "../middlewares/validateotp.middleware.js";
 import {updateQrVerified} from "../middlewares/verifyQr.middleware.js";
 import { registerParticipant,verifyPayment} from '../controllers/paymentController.js'
+import { signOtp } from "../middlewares/Signupotpgen.middleware.js";
+import { signupvalidateOtp } from "../middlewares/Signupotpverify.middleware.js";
 const router=Router();//Creating an instance or router
-router.route("/register").get(showsignup);//route for getting an Ejs template
-//register user
-router.route("/register").post(upload.fields([
-  {
-      name:"image",
-      maxCount:1
-  }
-]), registeruser);
+router.route("/register").get(showsignup); // Show signup form
+router.route("/register").post(upload.fields([{ name: "image", maxCount: 1 }]), registeruser,signOtp); // Generate OTP and handle registration
+router.route("/register/verifyotp").post( signupvalidateOtp, completeRegistration); // OTP verification and registration completion
+
 //render login page
 router.route("/login").get(showLogin);
 //trigger login controller

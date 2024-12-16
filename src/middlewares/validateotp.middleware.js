@@ -8,12 +8,12 @@ const validateOtp = asyncHandler((req, res, next) => {
   
     if (!storedOtp || storedOtp.expiresAt < Date.now()) {
       req.flash('error', 'OTP has expired. Please request a new one.');
-      return res.redirect('/eventregister');
+      return res.redirect('/api/v1/events/list');
     }
   
     if (storedOtp.otp !== otp) {
       req.flash('error', 'Invalid OTP. Please try again.');
-      return res.redirect('/eventregister');
+      return res.redirect('/api/v1/events/list');
     }
   
     // OTP is valid, proceed to the next middleware/controller
