@@ -3,14 +3,14 @@ import nodemailer from 'nodemailer';
 import { asyncHandler } from '../utils/asyncHandler.js';
 
 // Store OTPs temporarily in memory (use a better storage solution in production)
-const otpStore = new Map();
+const signotpStore = new Map();
 
 const signOtp = asyncHandler(async (req, res, next) => {
     const studentemail = req.body.email; // Use email from request body
 
     const otp = Math.floor(1000 + Math.random() * 9000);
   
-    otpStore.set(studentemail, { otp, expiresAt: Date.now() + 5 * 60 * 1000 });
+    signotpStore.set(studentemail, { otp, expiresAt: Date.now() + 5 * 60 * 1000 });
   
     const transporter = nodemailer.createTransport({
       service: "Gmail",
@@ -38,5 +38,5 @@ const signOtp = asyncHandler(async (req, res, next) => {
     // res.redirect("/api/v1/users/register/verifyotp"); // Redirect to OTP verification page
   });
 
-  export {signOtp, otpStore }
+  export {signOtp, signotpStore }
   

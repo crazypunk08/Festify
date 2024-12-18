@@ -1,5 +1,5 @@
 import {Router} from  "express";
-import { registeruser,completeRegistration,loginUser,logoutUser,refreshAccessToken,showsignup,showLogin,profilePage} from "../controllers/user.controller.js";
+import { registeruser,loginUser,logoutUser,refreshAccessToken,showsignup,showLogin,profilePage} from "../controllers/user.controller.js";
 import { registerStudent } from "../controllers/Register.controller.js";
 import { upload } from "../middlewares/multer.middleware.js";
 import {isLoggedIn} from "../middlewares/auth.middleware.js"
@@ -11,8 +11,8 @@ import { signOtp } from "../middlewares/Signupotpgen.middleware.js";
 import { signupvalidateOtp } from "../middlewares/Signupotpverify.middleware.js";
 const router=Router();//Creating an instance or router
 router.route("/register").get(showsignup); // Show signup form
-router.route("/register").post(upload.fields([{ name: "image", maxCount: 1 }]), registeruser,signOtp); // Generate OTP and handle registration
-router.route("/register/verifyotp").post( signupvalidateOtp, completeRegistration); // OTP verification and registration completion
+router.route("/register").post(upload.fields([{ name: "image", maxCount: 1 }]), registeruser);
+
 
 //render login page
 router.route("/login").get(showLogin);
