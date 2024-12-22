@@ -20,6 +20,15 @@
                     <% if (!(currUser && currUser.isAdmin)) { %>
                       <!-- Registration Buttons -->
                       <div class="d-flex flex-column align-items-center mt-4">
+                        <!-- Register as a Faculty -->
+                         <% if(isFaculty){ %>
+                        <form action="/api/v1/users/faculty" method="GET" class="w-75">
+                            <button type="submit" class="btn btn-outline-primary mb-3 py-2" 
+                                    style="font-size: 1.1rem; font-weight: 500;">
+                                Register as Faculty
+                            </button>
+                        </form>
+                        <% } %>
                         <!-- Register as a Gitian -->
                         <% if (isStudent) { %>
                         <form action="/api/v1/users/registerStudent" method="POST" class="w-75">
@@ -29,7 +38,7 @@
                             </button>
                         </form>
                         <% } %>
-                        <% if (!isStudent) { %>
+                        <% if (!(isStudent || isFaculty)) { %>
                         <!-- Register as a Participant -->
                         <form action="/api/v1/users/registerParticipant" method="POST" class="w-75">
                             <button type="submit" class="btn btn-outline-secondary py-2" 

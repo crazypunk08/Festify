@@ -1,0 +1,92 @@
+<% layout("/layouts/boilerplate") %>
+
+<style>
+    /* Scoped styles for the new form page */
+    .form-page {
+        font-family: 'Arial', sans-serif;
+        background-color: #f8f9fa;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+
+    .form-page h2 {
+        text-align: center;
+        margin-bottom: 20px;
+        color: #343a40;
+        font-weight: bold;
+    }
+
+    .form-page .form-container {
+        background-color: #fff;
+        box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+        padding: 30px;
+        border-radius: 15px;
+        width: 400px;
+        margin: auto;
+        transform: scale(1);
+        transition: transform 0.2s ease-in-out;
+    }
+
+    .form-page .form-container:hover {
+        transform: scale(1.02);
+    }
+
+    .form-page .form-container label {
+        font-weight: 600;
+        color: #495057;
+    }
+
+    .form-page .form-container input {
+        padding: 10px;
+        border: 1px solid #ced4da;
+        border-radius: 5px;
+        width: 100%;
+        margin-bottom: 15px;
+    }
+
+    .form-page .form-container input:focus {
+        border-color: #80bdff;
+        outline: none;
+        box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    }
+
+    .form-page .btn-success {
+        background-color: #28a745;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: bold;
+        color: #fff;
+        width: 100%;
+        transition: background-color 0.3s;
+    }
+
+    .form-page .btn-success:hover {
+        background-color: #218838;
+    }
+</style>
+
+<div class="form-page">
+    <div class="form-container">
+        <h2>Generate Passes</h2>
+        <form action="/api/v1/users/faculty" method="POST" class="needs-validation" novalidate>
+            <div class="mb-3">
+                <label for="passes" class="form-label">Select the number of passes you want to generate</label>
+                <input type="range" class="form-range" min="1" max="4" step="1" id="passes" name="passes">
+                <div class="d-flex justify-content-between">
+                    <span>1</span>
+                    <span>2</span>
+                    <span>3</span>
+                    <span>4</span>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-success">Generate</button>
+        </form>
+    </div>
+</div>

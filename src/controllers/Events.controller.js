@@ -4,14 +4,18 @@ import {ApiResponse} from "../utils/ApiResponse.js";
 import {uploadOnCloudinary} from "../utils/cloudinary.js";
 import {Event} from "../models/event.models.js";
 import {Student} from "../models/student.models.js"
+import { Faculty } from "../models/faculty.models.js";
 
 const showEvent=async (req,res)=>{
     let {id}=req.params;
     const event=await Event.findById(id)
     const user=req.user;
     const isStudent =await Student.findOne({email:user.email});
-    console.log(isStudent);
-    res.render("listings/show1.ejs",{event,isStudent})
+    let isFaculty=null;
+    if(!isStudent){
+         isFaculty=await Faculty.findOne({email:user.email});
+    }
+    res.render("listings/show1.ejs",{event,isStudent,isFaculty});
 }
 ///-----------List all Events
 const showclient =asyncHandler(async(req,res)=>{

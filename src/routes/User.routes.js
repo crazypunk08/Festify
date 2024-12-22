@@ -5,10 +5,11 @@ import { upload } from "../middlewares/multer.middleware.js";
 import {isLoggedIn} from "../middlewares/auth.middleware.js"
 import { generateOtp } from "../middlewares/genotp.middleware.js";
 import { validateOtp } from "../middlewares/validateotp.middleware.js";
-import {updateQrVerified} from "../middlewares/verifyQr.middleware.js";
+import {updateQrVerified,updateFacultyQr} from "../middlewares/verifyQr.middleware.js";
 import { registerParticipant,verifyPayment} from '../controllers/paymentController.js'
 import { signOtp } from "../middlewares/Signupotpgen.middleware.js";
 import { signupvalidateOtp } from "../middlewares/Signupotpverify.middleware.js";
+import { facultyRegistration,showForm} from "../controllers/Faculty.controller.js";
 const router=Router();//Creating an instance or router
 router.route("/register").get(showsignup); // Show signup form
 router.route("/register").post(upload.fields([{ name: "image", maxCount: 1 }]), registeruser);
@@ -23,6 +24,8 @@ router.route("/logout").post(isLoggedIn,logoutUser);
 router.route("/refreshtoken").post(refreshAccessToken);
 //route to show profile page
 router.route("/profile/:id").get(isLoggedIn,updateQrVerified,profilePage);
+//route to show faculty profile
+router.route("/facultyprofile/:id").get(isLoggedIn,updateFacultyQr,profilePage);
 // Route to initiate Student registration
 router.route('/registerStudent')
   .post(isLoggedIn, generateOtp, (req, res) => {
@@ -33,6 +36,10 @@ router.route('/registerStudent')
 // Route to validate OTP and register
 router.route('/verify-otp')
   .post(isLoggedIn, validateOtp, registerStudent);
+
+//Route to generate passes for Faculty
+router.route('/faculty').get(showForm);
+router.route('/faculty').post(isLoggedIn,facultyRegistration);
 
 // Route to initiate Participant registration via payment
 router.route('/registerParticipant').post(isLoggedIn,registerParticipant);

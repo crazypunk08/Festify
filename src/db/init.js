@@ -5,14 +5,15 @@ dotenv.config({
 });
 import { students } from "./data.js";
 import { Student } from "../models/student.models.js";
+import { Faculty } from "../models/faculty.models.js";
 import connectdatabase from "./index.js";
 
 connectdatabase();
 
 //function
 const initdb=async()=>{
-    await Student.deleteMany({});
-    const data= await Student.insertMany(students);
+    await Faculty.deleteMany({});
+    const data= await Faculty.insertMany(students);
     console.log("Mass import Successfull");
 };
 

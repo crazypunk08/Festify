@@ -283,7 +283,6 @@ const refreshAccessToken=asyncHandler(async(req,res)=>{
     if (!user) {
       throw new ApiError(404, "User not found");
     }
-  
     res.render("users/profile.ejs", { user });
   });
   
