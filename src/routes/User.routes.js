@@ -24,6 +24,8 @@ router.route("/logout").post(isLoggedIn,logoutUser);
 router.route("/refreshtoken").post(refreshAccessToken);
 //route to show profile page
 router.route("/profile/:id").get(isLoggedIn,updateQrVerified,profilePage);
+//route to just view the profile
+router.route("/viewprofile/:id").get(isLoggedIn,profilePage);
 //route to show faculty profile
 router.route("/facultyprofile/:id").get(isLoggedIn,updateFacultyQr,profilePage);
 // Route to initiate Student registration

@@ -30,7 +30,11 @@
                     <a class="nav-link btn btn-outline-success rounded-pill ms-2" href="/api/v1/users/login">Log in</a>
                 <% } %>
                 <% if (currUser) { %>
-                   
+                    <% if (!(currUser && currUser.isAdmin)) { %>
+                    <a class="nav-link" href="/api/v1/users/viewprofile/<%= currUser._id %>">
+                        <img src="<%= currUser.image %>" alt="Profile" class="rounded-circle" style="width: 40px; height: 40px;">
+                    </a>
+                    <% } %>
                     <form action="/api/v1/users/logout" method="POST">
                         <button type="submit" class="btn btn-danger rounded-pill ms-2">Log out</button>
                     </form>

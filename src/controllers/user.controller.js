@@ -2,6 +2,8 @@ import {asyncHandler} from "../utils/asyncHandler.js"
 import {ApiError} from "../utils/ApiError.js"
 import {ApiResponse} from "../utils/ApiResponse.js"
 import {User} from "../models/user.models.js"
+import { Student } from "../models/student.models.js"
+import { Faculty } from "../models/faculty.models.js"
 import {uploadOnCloudinary} from "../utils/cloudinary.js"
 
 
@@ -283,7 +285,12 @@ const refreshAccessToken=asyncHandler(async(req,res)=>{
     if (!user) {
       throw new ApiError(404, "User not found");
     }
-    res.render("users/profile.ejs", { user });
+    const student= await Student.findOne({email:user.email});
+    let faculty=null;
+    if(!student){
+         faculty=await Faculty.findOne({email:user.email});
+    }
+    res.render("users/profile.ejs", { user,student,faculty });
   });
   
 

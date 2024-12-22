@@ -16,10 +16,10 @@
   .profile-page .profile-container {
     background-color: #fff;
     box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
-    padding: 40px; /* Increased padding for better spacing */
-    border-radius: 15px;
-    width: 500px; /* Increased width */
-    height: auto; /* Adjusted height to accommodate image dynamically */
+    padding: 50px;
+    border-radius: 20px;
+    width: 550px;
+    height: auto;
     text-align: center;
     transform: scale(1);
     transition: transform 0.2s ease-in-out;
@@ -52,8 +52,8 @@
   }
 
   .profile-page .profile-image {
-    width: 150px;
-    height: 150px;
+    width: 180px;
+    height: 180px;
     border-radius: 50%;
     object-fit: cover;
     margin-bottom: 20px;
@@ -62,7 +62,17 @@
 
 <div class="profile-page">
   <div class="profile-container">
-    <h1>User Profile</h1>
+    <!-- Dynamic Heading -->
+    <h1>
+      <% if (student) { %>
+        Student Profile
+      <% } else if (faculty) { %>
+        Faculty Profile
+      <% } else { %>
+        User Profile
+      <% } %>
+    </h1>
+    
     <!-- User Image -->
     <% if (user.image) { %>
       <img class="profile-image" src="<%= user.image %>" alt="User Image">
@@ -74,6 +84,9 @@
       <p><strong>Username:</strong> <%= user.username %></p>
       <p><strong>Email:</strong> <%= user.email %></p>
       <p><strong>College:</strong> <%= user.college %></p>
+      <% if(faculty) {%>
+        <p><strong>No of Passes:</strong> <%= faculty.passes %></p>
+        <% }  %>
     </div>
   </div>
 </div>
